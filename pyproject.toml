@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "perpetuator-cli"
+version = "0.1.0"
+description = "Perpetuator CLI Tool"
+authors = ["Nik <nik@perpetuator.com>"]
+readme = "README.md"
+packages = [
+    { include = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "^1.0.0"
+requests = "^2.31.0"
+flask = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+perc = 'src.perc:perc'
