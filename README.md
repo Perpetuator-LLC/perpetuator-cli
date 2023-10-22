@@ -8,6 +8,15 @@ This CLI is used to interact with the Perpetuator APIs.
 
 ```shell
 pyenv shell 3.10.0
+```
+
+If it is your first time using poetry, then install that to the hosts `pyenv` for the current version:
+```shell
+pip install poetry
+```
+
+Now tell poetry what version of python is expected for this project:
+```shell
 poetry env use 3.10.0
 ```
 
