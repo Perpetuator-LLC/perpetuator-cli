@@ -6,6 +6,8 @@ This CLI is used to interact with the Perpetuator APIs.
 
 ## Setup
 
+For Codespaces you can skip this step as it will setup Python based on the `.python-version`
+
 ```shell
 pyenv shell 3.10.0
 ```
@@ -18,6 +20,11 @@ pip install poetry
 Now tell poetry what version of python is expected for this project:
 ```shell
 poetry env use 3.10.0
+```
+
+Nowdrop into the poetry shell where the dependencies are setup:
+```shell
+poetry shell
 ```
 
 ## Install
