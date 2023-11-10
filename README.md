@@ -1,6 +1,6 @@
 # Perpetuator - `perc` - CLI
 
-## Purpose
+## Purpose  
 
 This CLI is used to interact with the Perpetuator APIs.
 
