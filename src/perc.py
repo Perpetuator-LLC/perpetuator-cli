@@ -10,6 +10,8 @@ from src.api import add_api_command
 from src.auth import add_token_command
 from src.shared import realpath_type
 
+outputStarting = '-------------------------------------------------------------------------' + '\n' + '\n'
+outputEnding = '\n' + '\n' + '-------------------------------------------------------------------------'
 
 class AligningHelpFormatter(argparse.HelpFormatter):
     def __init__(self, prog):
@@ -39,14 +41,25 @@ class AligningHelpFormatter(argparse.HelpFormatter):
         
     def format_help(self):
         help_message = super().format_help()
-        return help_message + '\n' + '\n' + '-------------------------------------------------------------------------\n'
+        return help_message
 
 
-# import websockets
+class CustomArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        self.print_usage(sys.stderr)
+        sys.stderr.write(f'\n{self.format_help()}\n{message}\n{outputEnding}\n')
+        self.exit(2)
+
+    def print_help(self, file=None):
+        super().print_help(file)
+        print(outputEnding)
+
+#import websocket
 def perc():
-    print('-------------------------------------------------------------------------')
-    print('\n')
-    return run(argparse.ArgumentParser)
+    print(outputStarting)
+    result = run(CustomArgumentParser)
+    print(outputEnding)
+    return result
 
 
 def run(arg_parser, non_cli_args=None):
@@ -95,6 +108,7 @@ def run(arg_parser, non_cli_args=None):
         subparser.error(f"specify a '{command}' subcommand")  # exit 2
     else:
         parser.error(f"specify a subcommand")  # exit 2
+        print(outputEnding)
 
 
 def load_local_env():
