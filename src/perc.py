@@ -11,25 +11,67 @@ from src.auth import add_token_command
 from src.shared import realpath_type
 
 
+class AligningHelpFormatter(argparse.HelpFormatter):
+    def __init__(self, prog):
+        super().__init__(prog, max_help_position=40, width=100)
+
+    def _format_action_invocation(self, action):
+        result = super()._format_action_invocation(action)
+        # Adjust this value as needed to reduce/increase the space between columns
+        max_width = 20
+        needed_padding = max_width - len(result)
+        if needed_padding > 0:
+            result += ' ' * needed_padding
+        return result
+
+    def start_section(self, heading):
+        # Adjust the heading to be left aligned with a fixed offset
+        offset = 20
+        heading = ' ' * offset + heading.capitalize()
+        super().start_section(heading)
+
+    def _format_usage(self, usage, actions, groups, prefix):
+        return ''
+
+    def add_arguments(self, actions):
+        super().add_arguments(actions)
+        self._current_section.heading = self._current_section.heading.rstrip(":")
+        
+    def format_help(self):
+        help_message = super().format_help()
+        return help_message + '\n' + '\n' + '-------------------------------------------------------------------------\n'
+
+
 # import websockets
-
-
 def perc():
+    print('-------------------------------------------------------------------------')
+    print('\n')
     return run(argparse.ArgumentParser)
 
 
 def run(arg_parser, non_cli_args=None):
     load_local_env()
+    parser = arg_parser(prog="perc", formatter_class=AligningHelpFormatter)
 
-    parser = arg_parser(prog="perc", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-d", "--debug", action="store_true", help="Print debug messages to console")
-    parser.add_argument("-l", "--log-dir", dest='log_dir', type=str, help="Write log files to the specified location")
-    parser.add_argument("-p", "--profile", action="store_true", help="Profile the run")
+    # Uniform help messages with consistent capitalization and length
+    parser.add_argument("-d", "--debug", action="store_true", 
+                        help="Print debug messages to console.")
+    parser.add_argument("-l", "--log-dir", dest='log_dir', metavar='DIR', type=str, 
+                        help="Directory for writing log files.")
+    parser.add_argument("-p", "--profile", action="store_true", 
+                        help="Profile the run.")
+    
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    parser.add_argument("-t", "--token-file", dest='token_file', type=realpath_type, help="Token file location",
+    parser.add_argument("-t", "--token-file", dest='token_file', metavar='FILE', type=realpath_type, 
+                        help="Location of the token file.", 
                         default=os.path.join(script_dir, 'tokens.json'))
+    parser.add_argument(
+        "--token-file-default-location", metavar='', type=realpath_type, 
+        help="(default: /workspaces/perpetuator-cli/src/tokens.json)",
+    )
 
-    subparsers = parser.add_subparsers(dest="command", help="Subcommands")
+
+    subparsers = parser.add_subparsers(dest="command", metavar='', help='Subcommands')
 
     subparser_dict = {}
     # subparser_dict |= add_chroma_command(subparsers)

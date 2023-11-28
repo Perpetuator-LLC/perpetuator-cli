@@ -12,7 +12,10 @@ from src.auth import read_tokens, login_or_refresh_token, add_token_file_arg
 def get_user(args):
     logging.info("Getting current user")
     url = os.getenv('BACKEND_URL') + '/user'
-    api("get", args, url)
+    response = api("get", args, url)
+    user = response.json()['user']
+    logging.info("Username: "+ user['username'])
+    logging.info("Email: "+ user['email'])
 
 
 def get_uploads(args):
@@ -133,7 +136,7 @@ def api(method, args, url, **kwargs):
     logging.debug(f'Status: {response.status_code}')
     logging.debug(f'Headers: {response.headers}')
     logging.debug(f'Data:')
-    logging.info(json.dumps(response.json(), indent=4))
+    logging.debug(json.dumps(response.json(), indent=4))
     return response
 
 
