@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO, format='%(message)s')
 outputStarting = '-------------------------------------------------------------------------' + '\n' + '\n'
 outputEnding = '\n' + '\n' + '-------------------------------------------------------------------------'
 
-class AligningHelpFormatter(argparse.HelpFormatter):
+class AligningHelpFormatter(argparse.ArgumentDefaultsHelpFormatter):
     def __init__(self, prog):
         super().__init__(prog, max_help_position=40, width=100)
 
@@ -39,7 +39,7 @@ class AligningHelpFormatter(argparse.HelpFormatter):
     def add_arguments(self, actions):
         super().add_arguments(actions)
         self._current_section.heading = self._current_section.heading.rstrip(":")
-        
+
     def format_help(self):
         help_message = super().format_help()
         return help_message
@@ -68,21 +68,17 @@ def run(arg_parser, non_cli_args=None):
     parser = arg_parser(prog="perc", formatter_class=AligningHelpFormatter)
 
     # Uniform help messages with consistent capitalization and length
-    parser.add_argument("-d", "--debug", action="store_true", 
+    parser.add_argument("-d", "--debug", action="store_true",
                         help="Print debug messages to console.")
-    parser.add_argument("-l", "--log-dir", dest='log_dir', metavar='DIR', type=str, 
+    parser.add_argument("-l", "--log-dir", dest='log_dir', metavar='DIR', type=str,
                         help="Directory for writing log files.")
-    parser.add_argument("-p", "--profile", action="store_true", 
+    parser.add_argument("-p", "--profile", action="store_true",
                         help="Profile the run.")
-    
+
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    parser.add_argument("-t", "--token-file", dest='token_file', metavar='FILE', type=realpath_type, 
-                        help="Location of the token file.", 
+    parser.add_argument("-t", "--token-file", dest='token_file', metavar='FILE', type=realpath_type,
+                        help="Location of the token file.",
                         default=os.path.join(script_dir, 'tokens.json'))
-    parser.add_argument(
-        "--token-file-default-location", metavar='', type=realpath_type, 
-        help="(default: /workspaces/perpetuator-cli/src/tokens.json)",
-    )
 
 
     subparsers = parser.add_subparsers(dest="command", metavar='', help='Subcommands')
@@ -141,11 +137,11 @@ def configure_logging(console_debug: bool, log_dir: str) -> None:
     out_handler.setLevel(logging.DEBUG if console_debug else logging.INFO)
     out_handler.setFormatter(logging.Formatter("%(message)s"))
     logging.getLogger().addHandler(out_handler)
-    
+
     logger = logging.getLogger()
     logger.handlers.clear()
     logger.addHandler(out_handler)
-    
+
     if log_dir:
         run_log = os.path.join(log_dir, 'run.log')
         file_handler = logging.FileHandler(run_log)
