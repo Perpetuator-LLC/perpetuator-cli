@@ -10,6 +10,7 @@ from src.api import add_api_command
 from src.auth import add_token_command
 from src.shared import realpath_type
 
+logging.basicConfig(level=logging.INFO, format='%(message)s')
 outputStarting = '-------------------------------------------------------------------------' + '\n' + '\n'
 outputEnding = '\n' + '\n' + '-------------------------------------------------------------------------'
 
@@ -52,13 +53,13 @@ class CustomArgumentParser(argparse.ArgumentParser):
 
     def print_help(self, file=None):
         super().print_help(file)
-        print(outputEnding)
+        logging.info(outputEnding)
 
 #import websocket
 def perc():
-    print(outputStarting)
+    logging.info(outputStarting)
     result = run(CustomArgumentParser)
-    print(outputEnding)
+    logging.info(outputEnding)
     return result
 
 
@@ -108,7 +109,7 @@ def run(arg_parser, non_cli_args=None):
         subparser.error(f"specify a '{command}' subcommand")  # exit 2
     else:
         parser.error(f"specify a subcommand")  # exit 2
-        print(outputEnding)
+        logging.info(outputEnding)
 
 
 def load_local_env():
@@ -140,12 +141,17 @@ def configure_logging(console_debug: bool, log_dir: str) -> None:
     out_handler.setLevel(logging.DEBUG if console_debug else logging.INFO)
     out_handler.setFormatter(logging.Formatter("%(message)s"))
     logging.getLogger().addHandler(out_handler)
+    
+    logger = logging.getLogger()
+    logger.handlers.clear()
+    logger.addHandler(out_handler)
+    
     if log_dir:
         run_log = os.path.join(log_dir, 'run.log')
         file_handler = logging.FileHandler(run_log)
         file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(logging.Formatter("%(levelname)-5s: %(message)-320s %(asctime)s %(threadName)s"))
-        logging.getLogger().addHandler(file_handler)
+        logger.addHandler(file_handler)
         logging.info(">> Run log: {}".format(file_link_format(run_log)))
 
 
