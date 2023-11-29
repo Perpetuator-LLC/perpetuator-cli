@@ -11,7 +11,7 @@ class TestCollections(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         test_dir = os.path.dirname(os.path.realpath(__file__))
-        cls.cmd_start = ['prompt', '-t', os.path.join(test_dir, 'tokens.json')]
+        cls.cmd_start = ['post-index', '-t', os.path.join(test_dir, 'tokens.json')]
         cls.parser = TestArgParserWithErrorRaises
 
     def test_prompt_errors(self):
