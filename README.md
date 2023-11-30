@@ -17,12 +17,12 @@ If it is your first time using poetry, then install that to the hosts `pyenv` fo
 pip install poetry
 ```
 
-Now tell poetry what version of python is expected for this project:
+Now, tell poetry what version of python is expected for this project:
 ```shell
 poetry env use 3.10.0
 ```
 
-Nowdrop into the poetry shell where the dependencies are setup:
+Now, drop into the poetry shell where the dependencies are setup:
 ```shell
 poetry shell
 ```

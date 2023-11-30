@@ -10,26 +10,29 @@ from src.auth import read_tokens, login_or_refresh_token, add_token_file_arg
 
 
 def get_user(args):
-    logging.info("Getting current user")
+    logging.info("Getting current user: ")
     url = os.getenv('BACKEND_URL') + '/user'
-    api("get", args, url)
+    response = api("get", args, url)
+    user = response.json()['user']
+    logging.info("Username: "+ user['username'])
+    logging.info("Email: "+ user['email'])
 
 
 def get_uploads(args):
-    logging.info("Listing uploaded files")
+    logging.info("Listing uploaded files: ")
     url = os.getenv('BACKEND_URL') + '/uploads'
     api("get", args, url)
 
 
 def get_uploads_file(args):
-    logging.info(f"Get uploaded file {args.prefix}")
+    logging.info(f"Get uploaded file: {args.prefix}")
     url = f'{os.getenv("BACKEND_URL")}/uploads/{args.prefix}'
     api("get", args, url)
 
 
 def post_uploads_file(args):
     name = args.name or os.path.basename(args.file)
-    logging.info(f"Uploading {args.file} to prefix {name} (via API)")
+    logging.info(f"Uploading: {args.file} to prefix {name} (via API)")
     url = f'{os.getenv("BACKEND_URL")}/uploads/{name}'
     files = {'file': open(args.file, 'rb')}
     api("post", args, url, files=files)
@@ -37,7 +40,7 @@ def post_uploads_file(args):
 
 def put_uploads_file(args):
     name = args.name or os.path.basename(args.file)
-    logging.info(f"Uploading {args.file} to prefix {name} (via S3)")
+    logging.info(f"Uploading: {args.file} to prefix {name} (via S3)")
     # url = f'{os.getenv("BACKEND_URL")}/uploads/{name}'
     # files = {'file': open(args.file, 'rb')}
     # api("post", args, url, files=fil    print("Pre-signing file...")
@@ -66,19 +69,19 @@ def put_uploads_file(args):
 
 
 def delete_uploads_file(args):
-    logging.info(f"Deleting {args.prefix}")
+    logging.info(f"Deleting: {args.prefix}")
     url = f'{os.getenv("BACKEND_URL")}/uploads/{args.prefix}'
     api("delete", args, url)
 
 
 def post_index_file(args):
-    logging.info(f"Indexing collection '{args.collection}' with prefix {args.prefix}")
+    logging.info(f"Indexing collection: '{args.collection}' with prefix {args.prefix}")
     url = f'{os.getenv("BACKEND_URL")}/index/{args.collection}/{args.prefix}'
     api("post", args, url)
 
 
 def post_index(args):
-    logging.debug(f"Prompting collection '{args.collection}' with query '{args.query}'")
+    logging.debug(f"Prompting collection: '{args.collection}' with query '{args.query}'")
     # url = f'{os.getenv("BACKEND_URL")}/index'
     # api("get", args, url, json={"collection": args.collection, "query": args.query})
     url = f'{os.getenv("BACKEND_URL")}/index/{args.collection}'
@@ -89,33 +92,33 @@ def post_index(args):
 
 
 def get_index(args):
-    logging.debug(f"Listing collections")
+    logging.debug(f"Listing collections: ")
     url = f'{os.getenv("BACKEND_URL")}/index'
     params = {}
     api("get", args, url, params=params)
 
 
 def delete_index(args):
-    logging.debug(f"Deleting collection '{args.collection}'")
+    logging.debug(f"Deleting collection: '{args.collection}'")
     url = f'{os.getenv("BACKEND_URL")}/index/{args.collection}'
     params = {}
     api("delete", args, url, params=params)
 
 
 def get_threads(args):
-    logging.debug("Listing threads")
+    logging.debug("Listing threads: ")
     url = os.getenv('BACKEND_URL') + '/threads'
     api("get", args, url)
 
 
 def get_thread_messages(args):
-    logging.debug("Listing thread messages")
+    logging.debug("Listing thread messages: ")
     url = os.getenv('BACKEND_URL') + '/threads/' + args.thread_id
     api("get", args, url)
 
 
 def delete_thread(args):
-    logging.debug("Deleting thread")
+    logging.debug("Deleting thread: ")
     url = os.getenv('BACKEND_URL') + '/threads/' + args.thread_id
     api("delete", args, url)
 
@@ -133,7 +136,8 @@ def api(method, args, url, **kwargs):
     logging.debug(f'Status: {response.status_code}')
     logging.debug(f'Headers: {response.headers}')
     logging.debug(f'Data:')
-    logging.info(json.dumps(response.json(), indent=4))
+    logging.debug(json.dumps(response.json(), indent=4))
+    logging.info('\n')
     return response
 
 
